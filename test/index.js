@@ -4,7 +4,7 @@ var test = require('tape')
 var proxyquire = require('proxyquire')
 
 test('router (server)', function (t) {
-  var Router = proxyquire('../router', {
+  var Router = proxyquire('../', {
     'global/document': {},
     './history': {
       onPopState: noop,
@@ -18,7 +18,7 @@ test('router (server)', function (t) {
 
 test('router (browser) - set path', function (t) {
   t.plan(2)
-  var Router = proxyquire('../router', {
+  var Router = proxyquire('../', {
     'global/document': {
       location: {pathname: '/the/initial/path'}
     },
@@ -36,7 +36,7 @@ test('router (browser) - set path', function (t) {
 
 test('router (browser) - pop state', function (t) {
   var onPopState
-  var Router = proxyquire('../router', {
+  var Router = proxyquire('../', {
     'global/document': {},
     './history': {
       onPopState: function (callback) {
