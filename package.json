@@ -32,6 +32,7 @@
   "dependencies": {
     "geval": "~2.1.1",
     "global": "~4.3.0",
-    "observ": "~0.2.0"
+    "observ": "~0.2.0",
+    "routington": "~1.0.3"
   }
 }

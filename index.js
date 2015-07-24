@@ -3,6 +3,8 @@
 var Observ = require('observ')
 var location = require('global/document').location
 var history = require('./history')
+var Matcher = require('./router')
+var View = require('./view')
 
 module.exports = Router
 
@@ -28,4 +30,9 @@ function Router (data) {
     }
     history.pushState(path)
   }
+}
+
+Router.render = function render (state, routes) {
+  var match = Matcher(routes)
+  return View.render(state, match)
 }
