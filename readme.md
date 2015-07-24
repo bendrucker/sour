@@ -2,6 +2,8 @@
 
 > Router for functional rendering UIs
 
+sour is designed for use in both Node and the browser. It handles history manipulation in the browser and provides a uniform API for transitioning to a route whether you're running in Node or a browser. Routing is handled by [routington](https://github.com/pillarjs/routington).
+
 
 ## Install
 
@@ -13,31 +15,53 @@ $ npm install --save sour
 ## Usage
 
 ```js
-var sour = require('sour')
+var Router = require('sour')
+var state = Router()
 
-sour('input')
-//=> output
+console.log(state())
+//=> /the/current/path
+
+var content = Router.render(state, {
+  '/': function () {
+    return 'Home'
+  },
+  '/posts': function () {
+    return 'Post'
+  },
+  '/posts/:id': function (params) {
+    return 'Post ' + params.id
+  }
+})
 ```
 
 ## API
 
-#### `sour(input, [options])` -> `output`
+#### `Router([path])` -> `state`
 
-##### input
+Returns an [observable](https://github.com/raynos/observ) representation of the state.
+
+##### path
+
+Type: `string`  
+Default: `document.location.pathname`
+
+The initial path to use. In the browser, this defaults to the current page path. In the browser, it defaults to `''`. 
+
+#### `Router.render(state, routes)` -> `any`
+
+##### state
 
 *Required*  
 Type: `string`
 
-Lorem ipsum.
+The current path of the router.
 
-##### options
+##### routes
 
-###### foo
+*Required*  
+Type: `object`
 
-Type: `boolean`  
-Default: `false`
-
-Lorem ipsum.
+A routes object where the keys are route definitions to be passed to [routington](https://github.com/pillarjs/routington) and the values are functions that return the rendered content for the specified route. The functions will optionally receive a `params` object representing the path parameters when parameters are included in the route.
 
 
 ## License
