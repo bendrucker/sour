@@ -1,0 +1,37 @@
+{
+  "name": "sour",
+  "main": "index.js",
+  "version": "0.0.0",
+  "description": "Router for functional rendering UIs",
+  "license": "MIT",
+  "repository": "bendrucker/sour",
+  "author": {
+    "email": "bvdrucker@gmail.com",
+    "name": "Ben Drucker",
+    "url": "bendrucker.me"
+  },
+  "scripts": {
+    "test": "standard && tape test/*.js"
+  },
+  "keywords": [
+    "functional",
+    "observable",
+    "render",
+    "route",
+    "router"
+  ],
+  "devDependencies": {
+    "dom-event-target": "~1.0.0",
+    "proxyquire": "~1.6.0",
+    "standard": "^4.0.0",
+    "tape": "^4.0.0"
+  },
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "geval": "~2.1.1",
+    "global": "~4.3.0",
+    "observ": "~0.2.0"
+  }
+}
