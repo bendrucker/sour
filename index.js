@@ -8,9 +8,8 @@ var View = require('./view')
 
 module.exports = Router
 
-function Router (data) {
-  data = data || {}
-  var state = Observ(data.path || location ? location.pathname : '')
+function Router (path) {
+  var state = Observ(path || location ? location.pathname : '')
   var inPopState = false
 
   history.onPopState(onPopState)
