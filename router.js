@@ -7,6 +7,7 @@ var history = require('./history')
 module.exports = Router
 
 function Router (data) {
+  data = data || {}
   var state = Observ(data.path || location ? location.pathname : '')
   var inPopState = false
 
