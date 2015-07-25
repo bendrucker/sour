@@ -27,7 +27,10 @@
     "tape": "^4.0.0"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "router.js",
+    "history.js",
+    "view.js"
   ],
   "dependencies": {
     "geval": "~2.1.1",
