@@ -45,7 +45,7 @@ Returns an [observable](https://github.com/raynos/observ) representation of the 
 Type: `string`  
 Default: `document.location.pathname`
 
-The initial path to use. In the browser, this defaults to the current page path. In the browser, it defaults to `''`. 
+The initial path to use. In the browser, this defaults to the current page path. In node, it defaults to `''`. 
 
 #### `Router.render(state, routes)` -> `any`
 
