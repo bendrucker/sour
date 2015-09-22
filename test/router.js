@@ -9,7 +9,7 @@ test('route matching', function (t) {
   })
   t.deepEqual(match('/page/123'), {
     params: {id: '123'},
-    fn: render
+    render: render
   })
   t.notOk(match('/page'))
   t.end()

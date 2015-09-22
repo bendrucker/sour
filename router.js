@@ -9,14 +9,14 @@ function RouteMatcher (routes) {
 
   Object.keys(routes).forEach(function createRoute (route) {
     var node = router.define(route)[0]
-    node.fn = routes[route]
+    node.render = routes[route]
   })
 
   return function match (path) {
     var matched = router.match(path)
-    return matched && matched.node.fn && {
+    return matched && matched.node.render && {
       params: matched.param,
-      fn: matched.node.fn
+      render: matched.node.render
     }
   }
 }
