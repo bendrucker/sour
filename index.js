@@ -9,7 +9,6 @@ var Event = require('weakmap-event')
 var series = require('run-series')
 var partial = require('ap').partial
 var Table = require('./table')
-var View = require('./view')
 
 module.exports = Router
 
@@ -35,9 +34,11 @@ Router.listen = function listen (state) {
   return watch(state.path, function onPath (path) {
     var match = routes(state).match(path)
 
-    if (!match) return NotFoundEvent.broadcast(state, {
-      path: path
-    })
+    if (!match) {
+      return NotFoundEvent.broadcast(state, {
+        path: path
+      })
+    }
 
     var hooks = table.get(match.key).hooks()
 

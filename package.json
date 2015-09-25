@@ -21,7 +21,7 @@
     "router"
   ],
   "devDependencies": {
-    "standard": "^4.0.0",
+    "standard": "^5.3.1",
     "tape": "^4.0.0"
   },
   "files": [
@@ -40,7 +40,6 @@
     "routington": "~1.0.3",
     "run-series": "~1.1.4",
     "weakmap-event": "~2.0.6",
-    "weakmap-shim": "~1.1.0",
-    "xtend": "~4.0.0"
+    "weakmap-shim": "~1.1.0"
   }
 }

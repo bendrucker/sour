@@ -1,7 +1,6 @@
 'use strict'
 
 var Routington = require('routington')
-var extend = require('xtend')
 var createStore = require('weakmap-shim/create-store')
 
 module.exports = RoutingTable
