@@ -53,7 +53,8 @@ function RoutingTable () {
 
     return {
       key: node.data.key,
-      render: node.data.render
+      render: node.data.render,
+      params: matched.param
     }
   }
 }
