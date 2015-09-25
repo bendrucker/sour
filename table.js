@@ -2,6 +2,7 @@
 
 var Routington = require('routington')
 var createStore = require('weakmap-shim/create-store')
+var extend = require('xtend')
 
 module.exports = RoutingTable
 
@@ -17,7 +18,8 @@ function RoutingTable () {
 
   function add (options) {
     var node = router.define(options.path)[0]
-    var key = {}
+    var key = extend(options)
+    delete key.render
 
     node.data = {
       key: key,

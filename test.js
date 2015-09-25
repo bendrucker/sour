@@ -6,7 +6,7 @@ var watch = require('observ/watch')
 var Sour = require('./')
 
 test(function (t) {
-  t.plan(3)
+  t.plan(5)
 
   var state = Sour({
     path: '/users/123'
@@ -19,6 +19,9 @@ test(function (t) {
       return 'I am user ' + me().id
     }
   })
+
+  t.equal(user.path, '/users/:id')
+  t.notOk(user.render, 'route key is a copy without render')
 
   Sour.hook(state, user, function (params, callback) {
     fetch(params, function (err, data) {
