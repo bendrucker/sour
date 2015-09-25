@@ -1,10 +1,13 @@
 'use strict'
 
 var Struct = require('observ-struct')
+var Observ = require('observ')
 var Path = require('observ-path')
 var watch = require('observ/watch')
 var createStore = require('weakmap-shim/create-store')
 var Event = require('weakmap-event')
+var series = require('run-series')
+var partial = require('ap').partial
 var Table = require('./table')
 var View = require('./view')
 
@@ -15,26 +18,45 @@ function Router (data) {
 
   var state = Struct({
     path: Path(data.path),
-    route: Observ(),
-    pending: Observ(true)
+    listening: Observ(false),
+    active: Observ()
   })
 
-  var table = Table()
-  store(state).table
-
-  watch(path, function onChange (path) {
-    var match = table.match(path)
-    if (!match) return NotFoundEvent.broadcast(state, {
-      path: path
-    })
-
-  })
+  store(state).table = Table()
 
   return state
 }
 
+Router.listen = function listen (state) {
+  if (state.listening()) return
+
+  var table = routes(state)
+
+  return watch(state.path, function onPath (path) {
+    var match = routes(state).match(path)
+
+    if (!match) return NotFoundEvent.broadcast(state, {
+      path: path
+    })
+
+    var hooks = table.get(match.key).hooks()
+
+    series(hooks.map(function (hook) {
+      return partial(hook, match.params)
+    }), done)
+
+    function done (err) {
+      if (err) return ErrorEvent.broadcast(state, err)
+      state.active.set({render: match.render})
+    }
+  })
+}
+
 var NotFoundEvent = Event()
 Router.onNotFound = NotFoundEvent.listen
+
+var ErrorEvent = Event()
+Router.onError = ErrorEvent.listen
 
 var store = createStore()
 
@@ -47,11 +69,10 @@ Router.hook = function hook (state, route, callback) {
 }
 
 Router.render = function render (state) {
-  if (state.pending) return
-
+  if (!state.active) return
+  return state.active.render()
 }
 
 function routes (state) {
   return store(state).table
 }
-
