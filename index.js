@@ -3,7 +3,7 @@
 var Struct = require('observ-struct')
 var Observ = require('observ')
 var Path = require('observ-path')
-var watch = require('observ/watch')
+var observWatch = require('observ/watch')
 var createStore = require('weakmap-shim/create-store')
 var Event = require('weakmap-event')
 var series = require('run-series')
@@ -26,12 +26,12 @@ function Router (data) {
   return state
 }
 
-Router.listen = function listen (state) {
+Router.watch = function watch (state) {
   if (state.listening()) return
 
   var table = routes(state)
 
-  return watch(state.path, function onPath (path) {
+  return observWatch(state.path, function onPath (path) {
     var match = routes(state).match(path)
 
     if (!match) {

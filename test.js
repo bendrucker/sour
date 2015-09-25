@@ -38,7 +38,7 @@ test(function (t) {
     t.equal(data.path, '/not/defined')
   })
 
-  Sour.listen(state)
+  Sour.watch(state)
 
   state.path.set('/not/defined')
 
