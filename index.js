@@ -47,7 +47,8 @@ Router.listen = function listen (state) {
 
     function done (err) {
       if (err) return ErrorEvent.broadcast(state, err)
-      state.active.set({render: match.render})
+      store(match.key).render = match.render
+      state.active.set(match.key)
     }
   })
 }
@@ -70,7 +71,7 @@ Router.hook = function hook (state, route, callback) {
 
 Router.render = function render (state) {
   if (!state.active) return
-  return state.active.render()
+  return store(state.active).render()
 }
 
 function routes (state) {
