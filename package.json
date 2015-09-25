@@ -28,9 +28,7 @@
   },
   "files": [
     "index.js",
-    "router.js",
-    "history.js",
-    "view.js"
+    "table.js"
   ],
   "dependencies": {
     "ap": "~0.2.0",
