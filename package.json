@@ -37,6 +37,10 @@
     "global": "~4.3.0",
     "observ": "~0.2.0",
     "observ-path": "~1.0.0",
-    "routington": "~1.0.3"
+    "observ-struct": "~6.0.0",
+    "routington": "~1.0.3",
+    "weakmap-event": "~2.0.6",
+    "weakmap-shim": "~1.1.0",
+    "xtend": "~4.0.0"
   }
 }
