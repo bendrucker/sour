@@ -72,7 +72,8 @@ Router.hook = function hook (state, route, callback) {
 
 Router.render = function render (state) {
   if (!state.active) return
-  return store(state.active).render()
+  var renderPage = store(state.active).render
+  return renderPage ? renderPage() : undefined
 }
 
 function routes (state) {
