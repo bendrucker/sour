@@ -36,24 +36,26 @@ Router.watch = function watch (state) {
   return observWatch(state.path, function onPath (path) {
     var match = routes(state).match(path)
 
-    if (!match) {
-      return NotFoundEvent.broadcast(state, {
-        path: path
-      })
-    }
-
-    var globalHooks = store(state).hooks
-    var hooks = globalHooks.concat(table.get(match.key).hooks())
-
-    series(hooks.map(function (hook) {
-      return partial(hook, match.params)
-    }), done)
-
-    function done (err) {
+    series(store(state).hooks, function enterRoute (err) {
       if (err) return ErrorEvent.broadcast(state, err)
-      store(match.key).render = match.render
-      state.active.set(match.key)
-    }
+      if (!match) {
+        return NotFoundEvent.broadcast(state, {
+          path: path
+        })
+      }
+
+      var hooks = table.get(match.key).hooks()
+
+      series(hooks.map(function (hook) {
+        return partial(hook, match.params)
+      }), done)
+
+      function done (err) {
+        if (err) return ErrorEvent.broadcast(state, err)
+        store(match.key).render = match.render
+        state.active.set(match.key)
+      }
+    })
   })
 }
 
