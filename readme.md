@@ -87,7 +87,7 @@ Type: `function`
 
 The render function for the route.
 
-#### `Sour.hook(state, route, callback)` -> `undefined`
+#### `Sour.hook(state, [route], callback)` -> `undefined`
 
 ##### state
 
@@ -95,7 +95,7 @@ The router state.
 
 ##### route
 
-The route key object returned by `Sour.route`.
+The route key object returned by `Sour.route`. If no route is provided, the hook will run before all transitions.
 
 ##### callback
 

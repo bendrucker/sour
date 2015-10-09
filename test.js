@@ -6,7 +6,7 @@ var watch = require('observ/watch')
 var Sour = require('./')
 
 test(function (t) {
-  t.plan(6)
+  t.plan(7)
 
   var state = Sour({
     path: '/users/123'
@@ -22,6 +22,11 @@ test(function (t) {
 
   t.equal(user.path, '/users/:id')
   t.notOk(user.render, 'route key is a copy without render')
+
+  Sour.hook(state, function (params, callback) {
+    t.pass('global hook')
+    callback()
+  })
 
   Sour.hook(state, user, function (params, callback) {
     t.deepEqual(params, {

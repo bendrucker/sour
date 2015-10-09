@@ -21,7 +21,9 @@ function Router (data) {
     active: Observ()
   })
 
-  store(state).table = Table()
+  var internals = store(state)
+  internals.table = Table()
+  internals.hooks = []
 
   return state
 }
@@ -40,7 +42,8 @@ Router.watch = function watch (state) {
       })
     }
 
-    var hooks = table.get(match.key).hooks()
+    var globalHooks = store(state).hooks
+    var hooks = globalHooks.concat(table.get(match.key).hooks())
 
     series(hooks.map(function (hook) {
       return partial(hook, match.params)
@@ -67,7 +70,12 @@ Router.route = function route (state, options) {
 }
 
 Router.hook = function hook (state, route, callback) {
-  routes(state).get(route).hook(callback)
+  if (typeof route === 'function') {
+    callback = route
+    store(state).hooks.push(callback)
+  } else {
+    routes(state).get(route).hook(callback)
+  }
 }
 
 Router.render = function render (state) {
