@@ -6,12 +6,10 @@ var Router = require('../')
 test('simple render', function (t) {
   t.plan(1)
 
-  var state = Router({
-    path: '/app'
-  })
+  var state = Router()
 
   Router.route(state, {
-    path: '/app',
+    path: '/',
     render: function () {
       return 'sour'
     }
