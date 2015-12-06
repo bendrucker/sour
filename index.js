@@ -90,6 +90,15 @@ Router.route = function route (state, options) {
   return routes(state).add(options)
 }
 
+Router.hook = function hook (state, route, type, fn) {
+  if (typeof route === 'string') {
+    fn = type
+    type = route
+    route = null
+  }
+  return get(type, store(route || state).hooks).add(fn)
+}
+
 Router.render = function render (state) {
   if (!state.active) return
   return store(state.active).render()
@@ -135,7 +144,7 @@ function hooks (state, route, params) {
   if (!route) return noopHook
 
   return function runner (type, callback) {
-    series([run(state), run(route, params)], callback)
+    series([run(state, params), run(route, params)], callback)
 
     function run (key, arg) {
       return partial(get(type, store(key).hooks), arg)
