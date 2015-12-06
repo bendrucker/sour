@@ -11,6 +11,7 @@ var filter = require('filter-pipe')
 var watchIf = require('observ-listen-if/watch')
 var createStore = require('weakmap-shim/create-store')
 var Hooks = require('route-hook')
+var assign = require('xtend/mutable')
 
 var store = createStore()
 
@@ -70,7 +71,6 @@ Router.transition = function transition (state, route, params, callback) {
   function enter (callback) {
     activate(state, route, params)
     callback()
-    var after = filter(Boolean, fail)
     next('enter.after', filter(Boolean, fail))
   }
 
@@ -127,7 +127,7 @@ function createHooks (state) {
 
 function hooks (state, route, params) {
   return function runner (type, callback) {
-    series([run(state), run(route, data.params)], callback)
+    series([run(state), run(route, params)], callback)
 
     function run (key, arg) {
       return function runHooks (callback) {
