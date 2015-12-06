@@ -78,4 +78,31 @@ test('hooks', function (t) {
 
     Router.watch(state)
   })
+
+  t.test('error', function (t) {
+    t.plan(1)
+
+    var state = Router({
+      path: '/packages/sour'
+    })
+
+    Router.route(state, {
+      path: '/packages/:name',
+      render: function () {
+        t.fail('no render')
+      }
+    })
+
+    var err = new Error('route error')
+
+    Router.hook(state, 'enter.before', function (params, callback) {
+      callback(err)
+    })
+
+    Router.onError(state, function (e) {
+      t.equal(e, err)
+    })
+
+    Router.watch(state)
+  })
 })
