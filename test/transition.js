@@ -32,4 +32,29 @@ test('transition', function (t) {
       t.deepEqual(value, 'hooked')
     })
   })
+
+  t.test('error', function (t) {
+    t.plan(1)
+
+    var state = Router({
+      path: '/packages/sour'
+    })
+
+    var route = Router.route(state, {
+      path: '/packages/:name',
+      render: function () {
+        t.fail('no render')
+      }
+    })
+
+    var err = new Error('route err')
+
+    Router.hook(state, 'enter.before', function (params, callback) {
+      callback(err)
+    })
+
+    Router.transition(state, route, {}, function (e) {
+      t.equal(e, err)
+    })
+  })
 })
