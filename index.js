@@ -76,7 +76,7 @@ Router.transition = function transition (state, route, params, callback) {
 
   function enter (callback) {
     activate(state, route, params)
-    callback()
+    callback(null)
     next('enter.after', filter(Boolean, fail))
   }
 
