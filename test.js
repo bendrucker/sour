@@ -3,7 +3,7 @@
 var test = require('tape')
 var Router = require('./')
 
-test('simple', function (t) {
+test('simple render', function (t) {
   t.plan(1)
 
   var state = Router({
@@ -19,6 +19,18 @@ test('simple', function (t) {
 
   state.active(function onChange () {
     t.equal(Router.render(state()), 'sour')
+  })
+
+  Router.watch(state)
+})
+
+test('route not found', function (t) {
+  t.plan(1)
+
+  var state = Router()
+
+  Router.onNotFound(state, function (data) {
+    t.deepEqual(data, {path: '/'})
   })
 
   Router.watch(state)
