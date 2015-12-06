@@ -37,6 +37,7 @@
     "observ-readable": "~1.2.1",
     "observ-struct": "~6.0.0",
     "observ-value": "~1.0.0",
+    "route-hook": "~1.0.0",
     "routington": "~1.0.3",
     "run-series": "~1.1.4",
     "weakmap-event": "~2.0.6",

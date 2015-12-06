@@ -10,6 +10,7 @@ var Event = require('weakmap-event')
 var filter = require('filter-pipe')
 var watchIf = require('observ-listen-if/watch')
 var createStore = require('weakmap-shim/create-store')
+var Hooks = require('route-hook')
 
 var store = createStore()
 
@@ -60,9 +61,9 @@ Router.transition = function transition (state, route, params, callback) {
   var fail = partial(ErrorEvent.broadcast, state)
 
   series([
-    partial(current, 'beforeLeave'),
-    partial(current, 'afterLeave'),
-    partial(next, 'beforeEnter'),
+    partial(current, 'leave.before'),
+    partial(current, 'leave.after'),
+    partial(next, 'enter.before'),
     enter
   ], done)
 
@@ -70,7 +71,7 @@ Router.transition = function transition (state, route, params, callback) {
     activate(state, route, params)
     callback()
     var after = filter(Boolean, fail)
-    next('afterEnter', filter(Boolean, fail))
+    next('enter.after', filter(Boolean, fail))
   }
 
   function done (err) {
@@ -110,7 +111,7 @@ function routes (state) {
   function add (options) {
     var key = table(state).add(options)
     assign(store(key), options, {
-      hooks: hookStore()
+      hooks: Hooks()
     })
     return key
   }
@@ -120,17 +121,8 @@ function routes (state) {
   }
 }
 
-function hookStore () {
-  return {
-    beforeEnter: [],
-    afterEnter: [],
-    beforeLeave: [],
-    afterLeave: []
-  }
-}
-
 function createHooks (state) {
-  store(state).hooks = hookStore()
+  store(state).hooks = Hooks()
 }
 
 function hooks (state, route, params) {
