@@ -22,7 +22,8 @@
   ],
   "devDependencies": {
     "standard": "^5.3.1",
-    "tape": "^4.0.0"
+    "tape": "^4.0.0",
+    "value-pipe": "^1.0.0"
   },
   "files": [
     "index.js",
@@ -30,16 +31,19 @@
   ],
   "dependencies": {
     "ap": "~0.2.0",
+    "filter-pipe": "~1.0.1",
     "geval": "~2.1.1",
     "global": "~4.3.0",
     "observ": "~0.2.0",
     "observ-path": "~1.0.2",
+    "observ-listen-if": "~1.0.0",
     "observ-readable": "~1.2.1",
     "observ-struct": "~6.0.0",
     "observ-value": "~1.0.0",
     "route-hook": "~1.0.0",
     "routington": "~1.0.3",
     "run-series": "~1.1.4",
+    "tafel": "~1.0.0",
     "value-get": "~1.0.0",
     "weakmap-event": "~2.0.6",
     "weakmap-shim": "~1.1.0",
