@@ -12,6 +12,7 @@ var watchIf = require('observ-listen-if/watch')
 var createStore = require('weakmap-shim/create-store')
 var Hooks = require('route-hook')
 var assign = require('xtend/mutable')
+var get = require('value-get')
 
 var store = createStore()
 
@@ -131,7 +132,7 @@ function hooks (state, route, params) {
 
     function run (key, arg) {
       return function runHooks (callback) {
-        var fns = store(key).hooks[type].map(function (fn) {
+        var fns = get(store(key).hooks, type).map(function (fn) {
           return partial(fn, arg)
         })
         series(fns, callback)
