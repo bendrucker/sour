@@ -1,61 +1,25 @@
 'use strict'
 
 var test = require('tape')
-var Observ = require('observ')
-var watch = require('observ/watch')
-var Sour = require('./')
+var Router = require('./')
 
-test(function (t) {
-  t.plan(8)
+test('simple', function (t) {
+  t.plan(1)
 
-  var state = Sour({
-    path: '/users/123'
+  var state = Router({
+    path: '/app'
   })
-  var me = Observ()
 
-  var user = Sour.route(state, {
-    path: '/users/:id',
+  Router.route(state, {
+    path: '/app',
     render: function () {
-      return 'I am user ' + me().id
+      return 'sour'
     }
   })
 
-  t.equal(user.path, '/users/:id')
-  t.notOk(user.render, 'route key is a copy without render')
-
-  Sour.hook(state, function (callback) {
-    t.pass('global hook')
-    callback()
+  state.active(function onChange () {
+    t.equal(Router.render(state()), 'sour')
   })
 
-  Sour.hook(state, user, function (params, callback) {
-    t.deepEqual(params, {
-      id: '123'
-    })
-    fetch(params, function (err, data) {
-      if (err) return callback(err)
-      me.set(data)
-      callback(null)
-    })
-  })
-
-  var i = 0
-  watch(state.active, function () {
-    if (!i++) return t.equal(Sour.render(state()), undefined)
-    t.equal(Sour.render(state()), 'I am user 0')
-  })
-
-  Sour.onNotFound(state, function (data) {
-    t.equal(data.path, '/not/defined')
-  })
-
-  Sour.watch(state)
-
-  state.path.set('/not/defined')
-
-  function fetch (options, callback) {
-    process.nextTick(function () {
-      callback(null, {id: 0})
-    })
-  }
+  Router.watch(state)
 })

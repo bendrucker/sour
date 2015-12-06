@@ -13,6 +13,7 @@ var createStore = require('weakmap-shim/create-store')
 var Hooks = require('route-hook')
 var assign = require('xtend/mutable')
 var get = require('value-get')
+var nextTick = require('next-tick')
 
 module.exports = Router
 
@@ -24,7 +25,8 @@ function Router (data) {
   var state = Struct({
     path: Path(data.path),
     watching: Observ(false),
-    active: Observ()
+    active: Observ(),
+    params: Observ({})
   })
 
   createTable(state)
@@ -63,6 +65,7 @@ Router.transition = function transition (state, route, params, callback) {
   var current = hooks(state, state.active(), state.params())
   var next = hooks(state, route, params)
   var fail = partial(ErrorEvent.broadcast, state)
+  callback = typeof callback === 'function' ? callback : noop
 
   series([
     partial(current, 'leave.before'),
@@ -88,7 +91,7 @@ Router.route = function route (state, options) {
 }
 
 Router.render = function render (state) {
-  if (state.active) return
+  if (!state.active) return
   return store(state.active).render()
 }
 
@@ -112,7 +115,7 @@ function routes (state) {
   }
 
   function add (options) {
-    var key = table(state).add(options)
+    var key = table(state).add(options.path)
     assign(store(key), options, {
       hooks: Hooks()
     })
@@ -129,16 +132,19 @@ function createHooks (state) {
 }
 
 function hooks (state, route, params) {
+  if (!route) return noopHook
+
   return function runner (type, callback) {
     series([run(state), run(route, params)], callback)
 
     function run (key, arg) {
-      return function runHooks (callback) {
-        var fns = get(store(key).hooks, type).map(function (fn) {
-          return partial(fn, arg)
-        })
-        series(fns, callback)
-      }
+      return partial(get(type, store(key).hooks), arg)
     }
   }
 }
+
+function noopHook (type, callback) {
+  nextTick(callback)
+}
+
+function noop () {}
