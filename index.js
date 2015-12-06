@@ -14,6 +14,8 @@ var Hooks = require('route-hook')
 var assign = require('xtend/mutable')
 var get = require('value-get')
 
+module.exports = Router
+
 var store = createStore()
 
 function Router (data) {
