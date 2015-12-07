@@ -76,7 +76,10 @@ Router.transition = function transition (state, route, params, callback) {
   ], done)
 
   function enter (callback) {
-    activate(state, route, params)
+    activate(state, {
+      route: route,
+      params: params
+    })
     callback(null)
     next('enter.after', fail)
   }
@@ -105,9 +108,9 @@ Router.render = function render (state) {
   return store(state.active).render()
 }
 
-function activate (state, route, params) {
-  state.active.set(route)
-  state.params.set(params)
+function activate (state, options) {
+  state.active.set(options.route)
+  state.params.set(options.params)
 }
 
 function createTable (state) {
