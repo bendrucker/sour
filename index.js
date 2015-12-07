@@ -10,10 +10,10 @@ var Event = require('weakmap-event')
 var filter = require('filter-pipe')
 var watchIf = require('observ-listen-if/watch')
 var createStore = require('weakmap-shim/create-store')
-var Hooks = require('route-hook')
 var assign = require('xtend/mutable')
-var get = require('value-get')
 var nextTick = require('next-tick')
+
+var hooks = require('./hooks')
 
 module.exports = Router
 
@@ -30,7 +30,7 @@ function Router (data) {
   })
 
   createTable(state)
-  createHooks(state)
+  hooks.create(state)
 
   watchIf(
     state.watching,
@@ -62,8 +62,8 @@ function onPath (state, path) {
 }
 
 Router.transition = function transition (state, route, params, callback) {
-  var current = hooks(state, state.active(), state.params())
-  var next = hooks(state, route, params)
+  var current = hookRunner(state, state.active(), state.params())
+  var next = hookRunner(state, route, params)
 
   var fail = filter(Boolean, partial(ErrorEvent.broadcast, state))
   callback = callback || noop
@@ -108,7 +108,7 @@ Object.keys(hookPoints).forEach(function (key) {
       route = null
     }
 
-    return get(hookPoints[key], store(route || state).hooks).add(fn)
+    return hooks.add(route || state, hookPoints[key], fn)
   }
 })
 
@@ -138,9 +138,8 @@ function routes (state) {
 
   function add (options) {
     var key = table(state).add(options.path)
-    assign(store(key), options, {
-      hooks: Hooks()
-    })
+    assign(store(key), options)
+    hooks.create(key)
     return key
   }
 
@@ -149,18 +148,14 @@ function routes (state) {
   }
 }
 
-function createHooks (state) {
-  store(state).hooks = Hooks()
-}
-
-function hooks (state, route, params) {
+function hookRunner (state, route, params) {
   if (!route) return noopHook
 
   return function runner (type, callback) {
     series([run(state, params), run(route, params)], callback)
 
     function run (key, arg) {
-      return partial(get(type, store(key).hooks), arg)
+      return partial(hooks.get(type, key), arg)
     }
   }
 }
