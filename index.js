@@ -94,14 +94,23 @@ Router.route = function route (state, options) {
   return routes(state).add(options)
 }
 
-Router.hook = function hook (state, route, type, fn) {
-  if (typeof route === 'string') {
-    fn = type
-    type = route
-    route = null
-  }
-  return get(type, store(route || state).hooks).add(fn)
+var hookPoints = {
+  beforeEnter: 'enter.before',
+  afterEnter: 'enter.after',
+  beforeLeave: 'leave.before',
+  afterLeave: 'leave.after'
 }
+
+Object.keys(hookPoints).forEach(function (key) {
+  Router[key] = function hook (state, route, fn) {
+    if (typeof route === 'function') {
+      fn = route
+      route = null
+    }
+
+    return get(hookPoints[key], store(route || state).hooks).add(fn)
+  }
+})
 
 Router.render = function render (state) {
   if (!state.active) return

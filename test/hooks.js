@@ -19,7 +19,7 @@ test('hooks', function (t) {
       }
     })
 
-    Router.hook(state, 'enter.before', function (params, callback) {
+    Router.beforeEnter(state, function (params, callback) {
       t.deepEqual(params, {name: 'sour'})
       process.nextTick(function () {
         values.push(0)
@@ -27,7 +27,7 @@ test('hooks', function (t) {
       })
     })
 
-    Router.hook(state, 'enter.before', function (params, callback) {
+    Router.beforeEnter(state, function (params, callback) {
       values.push(1)
       callback()
     })
@@ -58,17 +58,17 @@ test('hooks', function (t) {
       path: '/other/route'
     })
 
-    Router.hook(state, 'enter.before', function (params, callback) {
+    Router.beforeEnter(state, function (params, callback) {
       values.push(0, 1)
       callback()
     })
 
-    Router.hook(state, pkg, 'enter.before', function (params, callback) {
+    Router.beforeEnter(state, pkg, function (params, callback) {
       values.push(2, 3)
       callback()
     })
 
-    Router.hook(state, other, 'enter.before', function () {
+    Router.beforeEnter(state, other, function () {
       t.fail('other route hook called')
     })
 
@@ -95,7 +95,7 @@ test('hooks', function (t) {
 
     var err = new Error('route error')
 
-    Router.hook(state, 'enter.before', function (params, callback) {
+    Router.beforeEnter(state, function (params, callback) {
       callback(err)
     })
 

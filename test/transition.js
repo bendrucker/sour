@@ -19,7 +19,7 @@ test('transition', function (t) {
       }
     })
 
-    Router.hook(state, 'enter.before', function (params, callback) {
+    Router.beforeEnter(state, function (params, callback) {
       t.deepEqual(params, {name: 'sour'})
       value = 'hooked'
       callback()
@@ -49,7 +49,7 @@ test('transition', function (t) {
 
     var err = new Error('route err')
 
-    Router.hook(state, 'enter.before', function (params, callback) {
+    Router.beforeEnter(state, function (params, callback) {
       callback(err)
     })
 
