@@ -65,7 +65,7 @@ Router.transition = function transition (state, route, params, callback) {
   var current = hooks(state, state.active(), state.params())
   var next = hooks(state, route, params)
   var fail = partial(ErrorEvent.broadcast, state)
-  callback = typeof callback === 'function' ? callback : noop
+  callback = callback || noop
 
   series([
     partial(current, 'leave.before'),
