@@ -64,7 +64,8 @@ function onPath (state, path) {
 Router.transition = function transition (state, route, params, callback) {
   var current = hooks(state, state.active(), state.params())
   var next = hooks(state, route, params)
-  var fail = partial(ErrorEvent.broadcast, state)
+
+  var fail = filter(Boolean, partial(ErrorEvent.broadcast, state))
   callback = callback || noop
 
   series([
@@ -77,11 +78,11 @@ Router.transition = function transition (state, route, params, callback) {
   function enter (callback) {
     activate(state, route, params)
     callback(null)
-    next('enter.after', filter(Boolean, fail))
+    next('enter.after', fail)
   }
 
   function done (err) {
-    if (err) fail(err)
+    fail(err)
     callback(err)
   }
 }
