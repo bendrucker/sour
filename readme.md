@@ -33,8 +33,8 @@ Sour.hook(state, hello, function (params, callback) {
   callback(null)
 })
 
-Sour.listen(state)
-//=> Listen to path changes and update the active route
+Sour.watch(state)
+//=> Observe path changes and update the active route
 
 state(function (state) {
   console.log(Sour.render(state))  
