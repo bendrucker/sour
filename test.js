@@ -5,6 +5,33 @@ var Observ = require('observ')
 var watch = require('observ/watch')
 var Sour = require('./')
 
+test('initialization', function (t) {
+  var state = Sour()
+
+  t.equal(state().path, '/', 'path defaults to "/"')
+  t.equal(state().listening, false, 'not listening by default')
+
+  Sour.route(state, {
+    path: '/',
+    render: function () {
+      return true
+    }
+  })
+  var stopWatching = Sour.watch(state)
+  t.equal(state().listening, true, 'sets listening to true when it starts listening')
+  t.ok(state().active, 'has an active entry')
+  t.ok(Sour.render(state()), 'render returns proper data from syncronous call')
+
+  setTimeout(function () {
+    t.ok(Sour.render(state()), 'render returns proper data')
+    t.ok(state().active, 'has an active entry')
+
+    stopWatching()
+    t.equal(state().listening, false, 'sets listening to false when watching is canceled')
+    t.end()
+  }, 500)
+})
+
 test(function (t) {
   t.plan(8)
 
