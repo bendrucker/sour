@@ -31,17 +31,30 @@ function Router (data) {
 Router.watch = function watch (state) {
   if (state.listening()) return
 
+  var first = true
   var table = routes(state)
 
-  return observWatch(state.path, function onPath (path) {
+  var stopWatching = observWatch(state.path, onPath)
+
+  state.listening.set(true)
+
+  return stopRouter
+
+  function stopRouter () {
+    stopWatching()
+    state.listening.set(false)
+  }
+
+  function onPath (path) {
     var match = routes(state).match(path)
 
     series(store(state).hooks, function enterRoute (err) {
       if (err) return ErrorEvent.broadcast(state, err)
       if (!match) {
-        return NotFoundEvent.broadcast(state, {
+        NotFoundEvent.broadcast(state, {
           path: path
         })
+        return ready()
       }
 
       var hooks = table.get(match.key).hooks()
@@ -54,9 +67,18 @@ Router.watch = function watch (state) {
         if (err) return ErrorEvent.broadcast(state, err)
         store(match.key).render = match.render
         state.active.set(match.key)
+        ready()
       }
     })
-  })
+  }
+
+  function ready () {
+    // emit an event the first first time this happens
+    if (first) {
+      first = false
+      ReadyEvent.broadcast(state, true)
+    }
+  }
 }
 
 var NotFoundEvent = Event()
@@ -64,6 +86,9 @@ Router.onNotFound = NotFoundEvent.listen
 
 var ErrorEvent = Event()
 Router.onError = ErrorEvent.listen
+
+var ReadyEvent = Event()
+Router.onReady = ReadyEvent.listen
 
 var store = createStore()
 
