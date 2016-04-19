@@ -19,17 +19,35 @@ test('initialization', function (t) {
   })
   var stopWatching = Sour.watch(state)
   t.equal(state().listening, true, 'sets listening to true when it starts listening')
-  t.ok(state().active, 'has an active entry')
-  t.ok(Sour.render(state()), 'render returns proper data from syncronous call')
+  t.notOk(state().active, 'does not have an active entry syncronously from init')
 
-  setTimeout(function () {
-    t.ok(Sour.render(state()), 'render returns proper data')
+  Sour.onReady(state, function () {
     t.ok(state().active, 'has an active entry')
 
     stopWatching()
     t.equal(state().listening, false, 'sets listening to false when watching is canceled')
     t.end()
-  }, 500)
+  })
+})
+
+test('initialization without routes', function (t) {
+  var state = Sour()
+
+  t.equal(state().path, '/', 'path defaults to "/"')
+  t.equal(state().listening, false, 'not listening by default')
+
+  var stopWatching = Sour.watch(state)
+  t.equal(state().listening, true, 'sets listening to true when it starts listening')
+  t.notOk(state().active, 'does not have an active entry syncronously from init')
+
+  Sour.onReady(state, function () {
+    t.notOk(state().active, 'has no active entry')
+    t.notOk(Sour.render(state()), 'render results in undefined')
+
+    stopWatching()
+    t.equal(state().listening, false, 'sets listening to false when watching is canceled')
+    t.end()
+  })
 })
 
 test(function (t) {
