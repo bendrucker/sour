@@ -80,10 +80,13 @@ Router.hook = function hook (state, route, callback) {
   }
 }
 
+// Router.render(state, param1, ...)
 Router.render = function render (state) {
   if (!state.active) return
   var renderPage = store(state.active).render
-  return renderPage ? renderPage() : undefined
+  // everything but our state
+  var args = Array.prototype.splice.call(arguments, 1)
+  return renderPage ? renderPage.apply(this, args) : undefined
 }
 
 function routes (state) {
