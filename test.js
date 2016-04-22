@@ -59,3 +59,24 @@ test(function (t) {
     })
   }
 })
+
+test('params', function (t) {
+  t.plan(3)
+
+  var state = Sour()
+
+  Sour.route(state, {
+    path: '/',
+    render: function (arg, arg2) {
+      t.equal(arg, 'foo', 'receives data')
+      t.ok(arg2, 'more than one')
+      return true
+    }
+  })
+  var stopWatching = Sour.watch(state)
+
+  state.active(function () {
+    t.ok(Sour.render(state(), 'foo', true), 'returns result')
+    stopWatching()
+  })
+})
