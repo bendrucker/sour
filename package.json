@@ -21,7 +21,7 @@
     "router"
   ],
   "devDependencies": {
-    "standard": "^5.3.1",
+    "standard": "^7.0.1",
     "tape": "^4.0.0",
     "value-pipe": "^1.0.0"
   },
