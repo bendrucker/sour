@@ -28,7 +28,7 @@ var hello = Sour.route(state, {
   }
 })
 
-Sour.hook(state, hello, function (params, callback) {
+Sour.beforeEnter(state, hello, function (params, callback) {
   //=> I run before the "hello" route is rendered
   callback(null)
 })
@@ -43,6 +43,8 @@ state(function (state) {
 
 ## API
 
+### Initialization
+
 #### `Sour([data])` -> `state`
 
 Returns an [observable](https://github.com/raynos/observ) representation of the state.
@@ -54,22 +56,15 @@ Default: `document.location.pathname`
 
 The initial path to use. In the browser, this defaults to the current page path. In Node, it defaults to `''`. 
 
-#### `Sour.render(state)` -> `any`
-
-##### state
-
-*Required*  
-Type: `object`
-
-The current state of the router. If no active route is found, `undefined` is returned.
-
 #### `Sour.watch(state)` -> `function`
 
 Watches for path changes to update the active route. Returns an unwatch function.
 
+### Routing
+
 #### `Sour.route(state, options)` -> `object`
 
-Defines a new route, returning the route key that can later be passed to `hook`.
+Defines a new route, returning the route key that can later be referenced to create hooks or change routes.
 
 ##### options
 
@@ -87,7 +82,72 @@ Type: `function`
 
 The render function for the route.
 
-#### `Sour.hook(state, [route], callback)` -> `undefined`
+#### `Sour.transition(state, route, params, callback)` -> `undefined`
+
+Transitions the router to the specified route returned by `Sour.route`. 
+
+##### state
+
+*Required*
+
+The router state.
+
+##### route
+
+*Required*  
+Type: `object`
+
+A route returned from `Sour.route`.
+
+##### params
+
+*Required*  
+Type: `object`
+
+Parameters for the route. These are passed to any registered route hooks.
+
+##### callback
+
+Type: `function`  
+Default: `noop`  
+Arguments: `err`
+
+A callback that will be called after the transition completes. A route transition is complete when:
+
+* `beforeLeave` hooks finish
+* `afterLeave` hooks finish
+* `beforeEnter` hooks finish
+* the active route is updated
+
+The `afterEnter` hook for the destination route will be run after the transition completes.
+
+### Rendering
+
+#### `Sour.render(state, [args...])` -> `any`
+
+Runs the `render` function defined via `Sour.route` for the active route and returns its result. 
+
+##### state
+
+*Required*  
+Type: `object`
+
+The current state of the router. If no active route is found, `undefined` is returned.
+
+##### args...
+
+A variadic set of arguments. These arguments are passed to your active `render` function.
+
+### Hooks
+
+Hooks provide a way to add custom behavior that runs at different points in the routing lifecycle. 
+
+#### `Sour.beforeEnter(state, [route], callback)` -> `function`
+#### `Sour.afterEnter(state, [route], callback)` -> `function`
+#### `Sour.beforeLeave(state, [route], callback)` -> `function`
+#### `Sour.afterLeave(state, [route], callback)` -> `function`
+
+Enter and leave hooks run asynchronously when moving between valid routes. Each hook method returns an unlisten function that will unregister the hook.
 
 ##### state
 
@@ -95,7 +155,7 @@ The router state.
 
 ##### route
 
-The route key object returned by `Sour.route`. If no route is provided, the hook will run before all transitions.
+The route key object returned by `Sour.route`. If no route is provided, the hook will run for every route.
 
 ##### callback
 
@@ -110,11 +170,23 @@ A callback that will be called when the specified route is activated. Hooks are 
 
 #### `Sour.onNotFound(state, listener)` -> `function`
 
-Calls a `listener` function with `{path}` when an unknown route is set. Returns an unlisten function.
+##### listener
+
+*Required*  
+Type: `function`  
+Arguments: `{path}`
+
+Called when the current path does not match any routes. Returns an unlisten function.
 
 #### `Sour.onError(state, listener)` -> `function`
 
-Calls a `listener` function with `err` when hook throws during a transition. Returns an unlisten function.
+##### listener
+
+*Required*  
+Type: `function`  
+Arguments: `err`
+
+Calls when any hook errors during a transition. Returns an unlisten function.
 
 ## License
 
