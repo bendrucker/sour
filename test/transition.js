@@ -5,7 +5,7 @@ var Router = require('../')
 
 test('transition', function (t) {
   t.test('success', function (t) {
-    t.plan(4)
+    t.plan(5)
 
     var state = Router({
       path: '/packages/sour'
@@ -27,6 +27,7 @@ test('transition', function (t) {
 
     Router.transition(state, route, {name: 'sour'}, function (err) {
       if (err) return t.end(err)
+      t.equal(state.path(), '/packages/sour')
       t.equal(state.active(), route)
       t.deepEqual(state.params(), {name: 'sour'})
       t.deepEqual(value, 'hooked')
