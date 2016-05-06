@@ -49,6 +49,7 @@ Router.onError = ErrorEvent.listen
 
 Router.watch = function watch (state) {
   state.watching.set(true)
+  return partial(state.watching.set, false)
 }
 
 function onPath (state, path) {
