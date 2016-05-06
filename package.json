@@ -46,6 +46,7 @@
     "routington": "~1.0.3",
     "run-series": "~1.1.4",
     "tafel": "~1.0.0",
+    "to-array": "~0.1.4",
     "value-get": "~1.0.0",
     "weakmap-event": "~2.0.6",
     "weakmap-shim": "~1.1.0",

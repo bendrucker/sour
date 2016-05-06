@@ -11,13 +11,13 @@ test('render', function (t) {
 
     Router.route(state, {
       path: '/',
-      render: function () {
-        return 'sour'
+      render: function (a, b) {
+        return [a, b, 'sour'].join('.')
       }
     })
 
     state.active(function onChange () {
-      t.equal(Router.render(state()), 'sour')
+      t.equal(Router.render(state(), 'foo', 'bar'), 'foo.bar.sour')
     })
 
     Router.watch(state)

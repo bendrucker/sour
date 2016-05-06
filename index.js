@@ -12,6 +12,7 @@ var watchIf = require('observ-listen-if/watch')
 var createStore = require('weakmap-shim/create-store')
 var assign = require('xtend/mutable')
 var nextTick = require('next-tick')
+var toArray = require('to-array')
 
 var hooks = require('./hooks')
 
@@ -115,7 +116,8 @@ Object.keys(hookPoints).forEach(function (key) {
 
 Router.render = function render (state) {
   if (!state.active) return
-  return store(state.active).render()
+  var args = toArray(arguments, 1)
+  return store(state.active).render.apply(null, args)
 }
 
 function activate (state, options) {
