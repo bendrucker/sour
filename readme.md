@@ -186,7 +186,7 @@ Called when the current path does not match any routes. Returns an unlisten func
 Type: `function`  
 Arguments: `err`
 
-Calls when any hook errors during a transition. Returns an unlisten function.
+Called when any hook errors during a transition. Returns an unlisten function.
 
 ## License
 
