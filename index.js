@@ -3,60 +3,43 @@
 var Struct = require('observ-struct')
 var Observ = require('observ')
 var Path = require('observ-path')
-var observWatch = require('observ/watch')
-var createStore = require('weakmap-shim/create-store')
-var Event = require('weakmap-event')
+var Table = require('tafel')
 var series = require('run-series')
 var partial = require('ap').partial
-var Table = require('./table')
+var Event = require('weakmap-event')
+var filter = require('filter-pipe')
+var watchIf = require('observ-listen-if/watch')
+var createStore = require('weakmap-shim/create-store')
+var assign = require('xtend/mutable')
+var nextTick = require('next-tick')
+var toArray = require('to-array')
+
+var hooks = require('./hooks')
 
 module.exports = Router
+
+var store = createStore()
 
 function Router (data) {
   data = data || {}
 
   var state = Struct({
     path: Path(data.path),
-    listening: Observ(false),
-    active: Observ()
+    watching: Observ(false),
+    active: Observ(),
+    params: Observ({})
   })
 
-  var internals = store(state)
-  internals.table = Table()
-  internals.hooks = []
+  createTable(state)
+  hooks.create(state)
+
+  watchIf(
+    state.watching,
+    state.path,
+    partial(onPath, state)
+  )
 
   return state
-}
-
-Router.watch = function watch (state) {
-  if (state.listening()) return
-
-  var table = routes(state)
-
-  return observWatch(state.path, function onPath (path) {
-    var match = routes(state).match(path)
-
-    series(store(state).hooks, function enterRoute (err) {
-      if (err) return ErrorEvent.broadcast(state, err)
-      if (!match) {
-        return NotFoundEvent.broadcast(state, {
-          path: path
-        })
-      }
-
-      var hooks = table.get(match.key).hooks()
-
-      series(hooks.map(function (hook) {
-        return partial(hook, match.params)
-      }), done)
-
-      function done (err) {
-        if (err) return ErrorEvent.broadcast(state, err)
-        store(match.key).render = match.render
-        state.active.set(match.key)
-      }
-    })
-  })
 }
 
 var NotFoundEvent = Event()
@@ -65,27 +48,123 @@ Router.onNotFound = NotFoundEvent.listen
 var ErrorEvent = Event()
 Router.onError = ErrorEvent.listen
 
-var store = createStore()
+Router.watch = function watch (state) {
+  state.watching.set(true)
+  return partial(state.watching.set, false)
+}
+
+function onPath (state, path) {
+  var match = routes(state).match(path)
+  if (!match) {
+    return NotFoundEvent.broadcast(state, {
+      path: path
+    })
+  }
+  Router.transition(state, match.key, match.params)
+}
+
+Router.transition = function transition (state, route, params, callback) {
+  var current = hookRunner(state, state.active(), state.params())
+  var next = hookRunner(state, route, params)
+
+  var fail = filter(Boolean, partial(ErrorEvent.broadcast, state))
+  callback = callback || noop
+
+  series([
+    partial(current, 'leave.before'),
+    partial(current, 'leave.after'),
+    partial(next, 'enter.before'),
+    enter
+  ], done)
+
+  function enter (callback) {
+    activate(state, {
+      route: route,
+      params: params
+    })
+    callback(null)
+    next('enter.after', fail)
+  }
+
+  function done (err) {
+    fail(err)
+    callback(err)
+  }
+}
 
 Router.route = function route (state, options) {
   return routes(state).add(options)
 }
 
-Router.hook = function hook (state, route, callback) {
-  if (typeof route === 'function') {
-    callback = route
-    store(state).hooks.push(callback)
-  } else {
-    routes(state).get(route).hook(callback)
-  }
+var hookPoints = {
+  beforeEnter: 'enter.before',
+  afterEnter: 'enter.after',
+  beforeLeave: 'leave.before',
+  afterLeave: 'leave.after'
 }
+
+Object.keys(hookPoints).forEach(function (key) {
+  Router[key] = function hook (state, route, fn) {
+    if (typeof route === 'function') {
+      fn = route
+      route = null
+    }
+
+    return hooks.add(route || state, hookPoints[key], fn)
+  }
+})
 
 Router.render = function render (state) {
   if (!state.active) return
-  var renderPage = store(state.active).render
-  return renderPage ? renderPage() : undefined
+  var args = toArray(arguments, 1)
+  return store(state.active).render.apply(null, args)
+}
+
+function activate (state, options) {
+  state.active.set(options.route)
+  state.params.set(options.params)
+}
+
+function createTable (state) {
+  store(state).table = Table()
+}
+
+function table (state) {
+  return store(state).table
 }
 
 function routes (state) {
-  return store(state).table
+  return {
+    add: add,
+    match: match
+  }
+
+  function add (options) {
+    var key = table(state).add(options.path)
+    assign(store(key), options)
+    hooks.create(key)
+    return key
+  }
+
+  function match (path) {
+    return table(state).match(path)
+  }
 }
+
+function hookRunner (state, route, params) {
+  if (!route) return noopHook
+
+  return function runner (type, callback) {
+    series([run(state, params), run(route, params)], callback)
+
+    function run (key, arg) {
+      return partial(hooks.get(type, key), arg)
+    }
+  }
+}
+
+function noopHook (type, callback) {
+  nextTick(callback)
+}
+
+function noop () {}
