@@ -1,7 +1,7 @@
 {
   "name": "sour",
   "main": "index.js",
-  "version": "3.0.1-0",
+  "version": "3.0.1",
   "description": "Router for functional rendering UIs",
   "license": "MIT",
   "repository": "bendrucker/sour",
