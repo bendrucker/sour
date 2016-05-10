@@ -7,9 +7,7 @@ test('transition', function (t) {
   t.test('success', function (t) {
     t.plan(5)
 
-    var state = Router({
-      path: '/packages/sour'
-    })
+    var state = Router()
     var value = ''
 
     var route = Router.route(state, {
