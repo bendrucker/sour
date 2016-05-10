@@ -71,9 +71,9 @@ Defines a new route, returning the route key that can later be referenced to cre
 ###### path
 
 *Required*  
-Type: `string`
+Type: `string|Array`
 
-A path string provided to [routington](https://github.com/pillarjs/routington).
+A path string or array of strings to provide to [routington](https://github.com/pillarjs/routington).
 
 ###### render
 
