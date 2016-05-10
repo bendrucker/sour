@@ -21,6 +21,7 @@
     "router"
   ],
   "devDependencies": {
+    "observ-once": "^1.0.0",
     "standard": "^7.0.1",
     "tape": "^4.0.0",
     "value-pipe": "^1.0.0"
@@ -44,7 +45,7 @@
     "route-hook": "~1.0.0",
     "routington": "~1.0.3",
     "run-series": "~1.1.4",
-    "tafel": "~1.0.0",
+    "tafel": "~1.1.0",
     "to-array": "~0.1.4",
     "value-get": "~1.0.0",
     "weakmap-event": "~2.0.6",
