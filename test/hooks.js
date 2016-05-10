@@ -1,6 +1,7 @@
 'use strict'
 
 var test = require('tape')
+var listenOnce = require('observ-once')
 var Router = require('../')
 
 test('hooks', function (t) {
@@ -104,5 +105,29 @@ test('hooks', function (t) {
     })
 
     Router.watch(state)
+  })
+
+  t.test('multiple paths', function (t) {
+    t.plan(2)
+
+    var state = Router()
+    var route = Router.route(state, {
+      path: [
+        '/packages/sour',
+        '/packages/tafel'
+      ]
+    })
+
+    Router.watch(state)
+
+    state.path.set('/packages/sour')
+    listenOnce(state.active, function (active) {
+      t.equal(active, route)
+      state.path.set('/packages/tafel')
+
+      listenOnce(state.active, function (active) {
+        t.equal(active, route)
+      })
+    })
   })
 })
