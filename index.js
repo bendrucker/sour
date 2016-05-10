@@ -13,6 +13,7 @@ var createStore = require('weakmap-shim/create-store')
 var assign = require('xtend/mutable')
 var nextTick = require('next-tick')
 var toArray = require('to-array')
+var softSet = require('soft-set')
 
 var hooks = require('./hooks')
 
@@ -123,6 +124,7 @@ Router.render = function render (state) {
 function activate (state, options) {
   state.active.set(options.route)
   state.params.set(options.params)
+  softSet(state.path, table(state).path(options.route, options.params))
 }
 
 function createTable (state) {
