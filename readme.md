@@ -56,9 +56,19 @@ Default: `document.location.pathname`
 
 The initial path to use. In the browser, this defaults to the current page path. In Node, it defaults to `''`. 
 
-#### `Sour.watch(state)` -> `function`
+#### `Sour.watch(state, [done])` -> `function`
 
 Watches for path changes to update the active route. Returns an unwatch function.
+
+##### done
+
+Type: `function`  
+Arguments: none
+
+An optional callback that will be called when the router is ready, meanin either:
+
+* No matching route was found
+* A match was located and the route transition was successful
 
 ### Routing
 

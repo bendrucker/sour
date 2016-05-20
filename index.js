@@ -8,7 +8,7 @@ var series = require('run-series')
 var partial = require('ap').partial
 var Event = require('weakmap-event')
 var filter = require('filter-pipe')
-var watchIf = require('observ-listen-if/watch')
+var listenIf = require('observ-listen-if')
 var createStore = require('weakmap-shim/create-store')
 var assign = require('xtend/mutable')
 var nextTick = require('next-tick')
@@ -34,7 +34,7 @@ function Router (data) {
   createTable(state)
   hooks.create(state)
 
-  watchIf(
+  listenIf(
     state.watching,
     state.path,
     partial(onPath, state)
@@ -49,19 +49,24 @@ Router.onNotFound = NotFoundEvent.listen
 var ErrorEvent = Event()
 Router.onError = ErrorEvent.listen
 
-Router.watch = function watch (state) {
+Router.watch = function watch (state, done) {
+  if (state.watching()) return
+  onPath(state, state.path(), done)
   state.watching.set(true)
   return partial(state.watching.set, false)
 }
 
-function onPath (state, path) {
+function onPath (state, path, done) {
+  done = done || noop
+
   var match = routes(state).match(path)
   if (!match) {
+    done()
     return NotFoundEvent.broadcast(state, {
       path: path
     })
   }
-  Router.transition(state, match.key, match.params)
+  Router.transition(state, match.key, match.params, done)
 }
 
 Router.transition = function transition (state, route, params, callback) {

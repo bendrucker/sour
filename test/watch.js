@@ -23,3 +23,34 @@ test('watch', function (t) {
 
   state.path.set('/bar') // noop
 })
+
+test('watch - done callback', function (t) {
+  t.test('match', function (t) {
+    t.plan(1)
+
+    var state = Router({
+      path: '/packages/sour'
+    })
+    Router.route(state, {
+      path: '/packages/:name'
+    })
+    var pkg
+    Router.beforeEnter(state, function (params, callback) {
+      pkg = params.name
+      callback()
+    })
+
+    Router.watch(state, function done () {
+      t.equal(pkg, 'sour')
+    })
+  })
+
+  t.test('no match', function (t) {
+    t.plan(1)
+
+    var state = Router()
+    Router.watch(state, function done () {
+      t.pass('called')
+    })
+  })
+})
