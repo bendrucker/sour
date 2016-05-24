@@ -56,17 +56,26 @@ Router.watch = function watch (state, done) {
   return partial(state.watching.set, false)
 }
 
-function onPath (state, path, done) {
-  done = done || noop
+function onPath (state, path, callback) {
+  if (store(state).transacting) return
+
+  callback = callback || noop
+  store(state).transacting = true
 
   var match = routes(state).match(path)
   if (!match) {
-    done()
+    done(new Error('Route not found'))
     return NotFoundEvent.broadcast(state, {
       path: path
     })
   }
   Router.transition(state, match.key, match.params, done)
+
+  function done (err) {
+    if (err) setPath(state)
+    store(state).transacting = false
+    callback()
+  }
 }
 
 Router.transition = function transition (state, route, params, callback) {
@@ -129,7 +138,12 @@ Router.render = function render (state) {
 function activate (state, options) {
   state.active.set(options.route)
   state.params.set(options.params)
-  softSet(state.path, table(state).path(options.route, options.params))
+  setPath(state)
+}
+
+function setPath (state) {
+  if (!state.active()) return
+  softSet(state.path, table(state).path(state.active(), state.params()))
 }
 
 function createTable (state) {
