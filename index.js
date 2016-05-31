@@ -65,15 +65,16 @@ function onPath (state, path, callback) {
   var match = routes(state).match(path)
   if (!match) {
     done(new Error('Route not found'))
+    store(state).transacting = false
     return NotFoundEvent.broadcast(state, {
       path: path
     })
   }
+  store(state).transacting = false
   Router.transition(state, match.key, match.params, done)
 
   function done (err) {
     if (err) setPath(state)
-    store(state).transacting = false
     callback()
   }
 }
