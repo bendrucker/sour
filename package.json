@@ -37,6 +37,7 @@
     "next-tick": "~0.2.2",
     "observ": "~0.2.0",
     "observ-listen-if": "~1.0.1",
+    "observ-location-hash": "~1.0.2",
     "observ-path": "~1.0.1",
     "observ-readable": "~1.2.1",
     "observ-struct": "~6.0.0",

@@ -3,6 +3,7 @@
 var Struct = require('observ-struct')
 var Observ = require('observ')
 var Path = require('observ-path')
+var Hash = require('observ-location-hash')
 var Table = require('tafel')
 var series = require('run-series')
 var partial = require('ap').partial
@@ -25,7 +26,7 @@ function Router (data) {
   data = data || {}
 
   var state = Struct({
-    path: Path(data.path),
+    path: (data.hash ? Hash : Path)(data.path),
     watching: Observ(false),
     active: Observ(),
     params: Observ({})
