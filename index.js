@@ -49,6 +49,10 @@ Router.onNotFound = NotFoundEvent.listen
 var ErrorEvent = Event()
 Router.onError = ErrorEvent.listen
 
+Router.path = function path (state, route, params) {
+  return store(state).table.path(route, params)
+}
+
 Router.watch = function watch (state, done) {
   if (state.watching()) return
   onPath(state, state.path(), done)
