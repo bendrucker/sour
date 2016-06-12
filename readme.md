@@ -198,6 +198,25 @@ Arguments: `err`
 
 Called when any hook errors during a transition. Returns an unlisten function.
 
+
+#### `Sour.path(state, route, [params])` -> `string`
+
+Given a route and its path params, return a string representing the route's path.
+
+#### route
+
+*Required*
+Type: `object`
+
+A route returned from `Sour.route`
+
+#### params
+
+*Optional*
+Type: `object`
+
+Params to match against the params in the path of the given route.
+
 ## License
 
 MIT © [Ben Drucker](http://bendrucker.me)
