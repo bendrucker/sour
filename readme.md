@@ -1,4 +1,4 @@
-# sour [![Build Status](https://travis-ci.org/bendrucker/sour.svg?branch=master)](https://travis-ci.org/bendrucker/sour)
+# sour [![Build Status](https://travis-ci.org/bendrucker/sour.svg?branch=master)](https://travis-ci.org/bendrucker/sour) [![Greenkeeper badge](https://badges.greenkeeper.io/bendrucker/sour.svg)](https://greenkeeper.io/)
 
 > Router for functional rendering UIs
 
