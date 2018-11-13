@@ -21,7 +21,7 @@
     "router"
   ],
   "devDependencies": {
-    "standard": "^7.0.1",
+    "standard": "^12.0.1",
     "tape": "^4.0.0",
     "value-pipe": "^1.0.0"
   },
@@ -32,9 +32,9 @@
   "dependencies": {
     "ap": "~0.2.0",
     "filter-pipe": "~1.0.1",
-    "geval": "~2.1.1",
+    "geval": "~2.2.0",
     "global": "~4.3.0",
-    "next-tick": "~0.2.2",
+    "next-tick": "~1.0.0",
     "observ": "~0.2.0",
     "observ-listen-if": "~1.0.1",
     "observ-location-hash": "~1.0.2",
