@@ -18,16 +18,16 @@ test('transition', function (t) {
     })
 
     Router.beforeEnter(state, function (params, callback) {
-      t.deepEqual(params, {name: 'sour'})
+      t.deepEqual(params, { name: 'sour' })
       value = 'hooked'
       callback()
     })
 
-    Router.transition(state, route, {name: 'sour'}, function (err) {
+    Router.transition(state, route, { name: 'sour' }, function (err) {
       if (err) return t.end(err)
       t.equal(state.path(), '/packages/sour')
       t.equal(state.active(), route)
-      t.deepEqual(state.params(), {name: 'sour'})
+      t.deepEqual(state.params(), { name: 'sour' })
       t.deepEqual(value, 'hooked')
     })
   })
