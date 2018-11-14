@@ -9,7 +9,7 @@ test('route not found', function (t) {
   var state = Router()
 
   Router.onNotFound(state, function (data) {
-    t.deepEqual(data, {path: '/'})
+    t.deepEqual(data, { path: '/' })
   })
 
   Router.watch(state)

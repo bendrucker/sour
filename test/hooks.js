@@ -20,7 +20,7 @@ test('hooks', function (t) {
     })
 
     Router.beforeEnter(state, function (params, callback) {
-      t.deepEqual(params, {name: 'sour'})
+      t.deepEqual(params, { name: 'sour' })
       process.nextTick(function () {
         values.push(0)
         callback()

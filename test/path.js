@@ -12,11 +12,11 @@ test('get path for route with params', function (t) {
     }
   })
 
-  t.equal(Router.path(state, route, {id: 1}), '/foo/1')
+  t.equal(Router.path(state, route, { id: 1 }), '/foo/1')
 
   // invalid key
   t.throws(function () {
-    Router.path(state, {}, {id: 1})
+    Router.path(state, {}, { id: 1 })
   })
 
   // no params
