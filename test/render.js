@@ -22,4 +22,6 @@ test('render', function (t) {
 
     Router.watch(state)
   })
+
+  t.end()
 })

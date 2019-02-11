@@ -22,7 +22,7 @@
   ],
   "devDependencies": {
     "standard": "^12.0.1",
-    "tape": "^4.0.0",
+    "tape": "^4.10.0",
     "value-pipe": "^1.0.0"
   },
   "files": [

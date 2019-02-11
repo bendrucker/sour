@@ -105,4 +105,6 @@ test('hooks', function (t) {
 
     Router.watch(state)
   })
+
+  t.end()
 })

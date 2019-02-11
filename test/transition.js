@@ -56,4 +56,6 @@ test('transition', function (t) {
       t.equal(e, err)
     })
   })
+
+  t.end()
 })

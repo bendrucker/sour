@@ -53,4 +53,6 @@ test('watch - done callback', function (t) {
       t.pass('called')
     })
   })
+
+  t.end()
 })
